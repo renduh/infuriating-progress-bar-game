@@ -240,7 +240,16 @@ var app = new Vue({
       },
       restartgame: function () {
         console.log('restart game');
-        location.reload();
+        this.progress=0;
+        this.progressrun=0;
+        this.level=1;
+        this.message = "Press start";
+        this.hint = 'Hint: On level 1 you have to stop the progress bar above 50%.',
+        this.targetmin = 0;
+        this.targetmax = 100;
+        document.getElementById('restartgame').disabled = true;
+        document.getElementById('startbutton').disabled = false;  
+        document.getElementById('stopbutton').disabled = true;  
       }
     }
 });
