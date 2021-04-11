@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Progress bar - the game</title>
+  <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+  html, body {
+    width:100%;
+    padding:0;
+    margin:0;
+    font-family: sans-serif;
+    background:#000;
+    color:#fff;
+  }
+  #game {
+    width:98%;
+    max-width:600px;
+    margin:0 auto 0;
+    text-align:center;
+  }
+  progress {
+    width:100%;
+    height: 50px;
+    border-radius: 0px;
+  }
+  progress::-webkit-progress-bar {
+    background-color: #ccc;
+  }
+  progress::-webkit-progress-value {
+    background-color: blue;
+  }
+  .title {
+    font-family: 'Press Start 2P', sans-serif;
+    text-transform:uppercase;
+    font-size:27px;
+    line-height: 35px;
+    margin:40px 0 40px 0;
+    color: #e0da12;
+  }
+  .hint {
+    color:#989898;
+  }
+  button {
+    font-size: 20px;
+    border-radius: 0;
+    border: 4px solid #fff;
+    background: transparent;
+    color: #fff;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin: 10px 20px 10px 20px;
+  }
+  button:disabled {
+    opacity:0.2;
+  }
+
+  </style>
+</head>
+
+<body>
+
+<div id="app">
+  <div id="game">
+    <h1 class="title">The infuriating progress bar game</h1>
+    <h3>Level: {{level}} {{outof}}</h3>
+  <!--   {{progress}}% - Run: {{progressrun}} - Targetmin {{targetmin}} - Targetmax {{targetmax}} -->
+    <progress id="file" :value="progress" max="100">  </progress>
+    <h3>{{message}}</h3>
+    <p class="hint"><i>{{hint}}</i></p>
+    <button id="startbutton" v-on:click="startgame">Start</button>
+    <button id="stopbutton" v-on:click="stopgame" disabled>Stop</button>
+    <br><br>
+    <button id="restartgame" v-on:click="restartgame" disabled>Try again</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+var app = new Vue({
+    el: '#app',
+    data: {
+      message: 'Press start',
+      hint: 'Hint: On level 1 you have to stop the progress bar above 50%.',
+      hint2: 'Hint: On level 2 you have to stop between 20% and 80%.',
+      hint3: 'Hint: On level 3 you have to stop between 10% and 60%.',
+      hint4: 'Hint: On level 4 you have to stop between 40% and 60%.',
+      hint5: 'Hint: On level 5 you have to stop below 50%.',
+      hint6: 'Hint: On level 6 you have to stop above 75%.',
+      hint7: 'Hint: On level 7 you have to stop below 20%.',
+      hint8: 'Hint: On level 8 you have to stop between 20% and 50%.',
+      hint9: 'Hint: On level 9 you have to stop above 80%.',
+      hint10: 'Hint: On level 10 you have to stop between 50% and 60%.',
+      progress: 0,
+      progressrun: 0,
+      level:1,
+      targetmin:0,
+      targetmax:100,
+      nextlevel:"",
+      startlevel:"",
+      outof:"/ 10"
+    },
+    methods: {
+      mainrandom: function () {
+          return Math.floor(Math.random() * 1000000000);
+      },
+      count: function () {
+          if(this.progress >= 100) {step = -1;this.progressrun++;}
+          if(this.progress <= 0) {step = +1;this.progressrun++;}
+          this.progress += step;
+          if (this.progressrun == 7) {
+            clearInterval(this.timer);
+            app.stopgame();
+          }
+      },
+      startgame: function () {
+          startlevel = "game" + this.level;
+          this.hint = "You've got three atempts";
+          app[startlevel]();   
+          document.getElementById('startbutton').disabled = true;    
+          document.getElementById('stopbutton').disabled = false;        
+      },
+      game1: function () {
+          this.progress=0;
+          this.progressrun=0;
+          this.timer = setInterval(this.count, 10);
+          this.message = "Stop the progress bar above 50%";
+          this.targetmin = 50;
+          this.targetmax = 100;
+      },
+      game2: function () {
+          this.progress=0;
+          this.progressrun=0;
+          this.message = "Press start for game 2";
+          this.timer = setInterval(this.count, 7);
+          this.message = "Stop the progress bar between 20% and 80%";
+          this.targetmin = 20;
+          this.targetmax = 80;
+      },
+      game3: function () {
+          this.progress=0;
+          this.progressrun=0;
+          this.timer = setInterval(this.count, 5);
+          this.message = "Stop the progress bar between 10% and 60%";
+          this.targetmin = 10;
+          this.targetmax = 60;
+      },
+      game4: function () {
+          this.progress=0;
+          this.progressrun=0;
+          this.timer = setInterval(this.count, 6);
+          this.message = "Stop the progress bar between 40% and 60%";
+          this.targetmin = 40;
+          this.targetmax = 60;
+      },
+      game5: function () {
+          this.progress=0;
+          this.progressrun=0;
+          this.timer = setInterval(this.count, 1);
+          this.message = "Stop the progress bar below 50%";
+          this.targetmin = 0;
+          this.targetmax = 50;
+      },
+      game6: function () {
+          this.progress=0;
+          this.progressrun=0;
+          this.timer = setInterval(this.count, 3);
+          this.message = "Stop the progress bar above 75%";
+          this.targetmin = 75;
+          this.targetmax = 100;
+      },
+      game7: function () {
+          this.progress=0;
+          this.progressrun=0;
+          this.timer = setInterval(this.count, 1);
+          this.message = "Stop the progress bar below 20%";
+          this.targetmin = 0;
+          this.targetmax = 20;
+      },
+      game8: function () {
+          this.progress=0;
+          this.progressrun=0;
+          this.timer = setInterval(this.count, 3);
+          this.message = "Stop the progress bar between 20% and 50%";
+          this.targetmin = 20;
+          this.targetmax = 50;
+      },
+      game9: function () {
+          this.progress=0;
+          this.progressrun=0;
+          this.timer = setInterval(this.count, 1);
+          this.message = "Stop the progress bar above 80%";
+          this.targetmin = 80;
+          this.targetmax = 100;
+      },
+      game10: function () {
+          this.progress=0;
+          this.progressrun=0;
+          this.timer = setInterval(this.count, 6);
+          this.message = "Stop the progress bar between 50% and 60%";
+          this.targetmin = 50;
+          this.targetmax = 60;
+      },
+      stopgame: function () {
+        clearInterval(this.timer);
+        document.getElementById('stopbutton').disabled = true; 
+        document.getElementById('startbutton').disabled = false; 
+        if (this.progress < this.targetmin || this.progress > this.targetmax) {
+          this.message = "You lose! You stopped on " + this.progress + "%";
+          app.hint="Try again. You can do it!"
+          document.getElementById('restartgame').disabled = false;
+          document.getElementById('startbutton').disabled = true;  
+          document.getElementById('stopbutton').disabled = true;  
+        } else {
+          this.message = "You win! You stopped on " + this.progress + "%. Start for next level.";
+          this.level++; 
+          if (this.level==11) {
+            app.level="Complete";
+            app.outof="";
+            app.message="You won the whole game.";
+            app.hint="Congratulations!";
+            document.getElementById('restartgame').disabled = false;
+            document.getElementById('startbutton').disabled = true;  
+            document.getElementById('stopbutton').disabled = true;  
+          } else {
+            var hintnum = "hint" + app.level;
+            app.hint = app[hintnum];
+          }
+        }
+      },
+      restartgame: function () {
+        console.log('restart game');
+        location.reload();
+      }
+    }
+});
+</script>
+</body>
+</html>
